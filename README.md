@@ -1,0 +1,1 @@
+# XOR-File-Security-Studio

@@ -1,315 +1,410 @@
 
-const fileInput = document.getElementById("fileInput");
-const uploadArea = document.getElementById("uploadArea");
-const fileInfo = document.getElementById("fileInfo");
-const keyInput = document.getElementById("keyInput");
-const toggleKey = document.getElementById("toggleKey");
-const strengthBar = document.getElementById("strengthBar");
-const strengthText = document.getElementById("strengthText");
-const actionInput = document.getElementById("action");
-const processBtn = document.getElementById("processBtn");
-const buttonText = document.getElementById("buttonText");
-const processVisual = document.getElementById("processVisual");
-const message = document.getElementById("message");
-const resultPanel = document.getElementById("resultPanel");
-const resultText = document.getElementById("resultText");
-const downloadLink = document.getElementById("downloadLink");
+document.addEventListener("DOMContentLoaded", () => {
+    const fileInput = document.getElementById("fileInput");
+    const uploadArea = document.getElementById("uploadArea");
+    const fileInfo = document.getElementById("fileInfo");
+    const keyInput = document.getElementById("keyInput");
+    const toggleKey = document.getElementById("toggleKey");
+    const strengthBar = document.getElementById("strengthBar");
+    const strengthText = document.getElementById("strengthText");
+    const keyFeedback = document.getElementById("keyFeedback");
 
-let selectedFile = null;
-let downloadUrl = null;
+    const fileForm = document.getElementById("fileForm");
+    const actionInput = document.getElementById("action");
+    const processBtn = document.getElementById("processBtn");
+    const buttonText = document.getElementById("buttonText");
+    const processVisual = document.getElementById("processVisual");
 
-// ENCRYPT / DECRYPT MODE
-document.querySelectorAll(".operation-btn").forEach(button => {
-    button.addEventListener("click", () => {
-        if (processBtn.disabled) return;
+    const message = document.getElementById("message");
+    const resultPanel = document.getElementById("resultPanel");
+    const resultText = document.getElementById("resultText");
+    const downloadLink = document.getElementById("downloadLink");
 
-        document.querySelectorAll(".operation-btn")
-            .forEach(btn => btn.classList.remove("active"));
+    const modeButtons = document.querySelectorAll(".operation-btn");
 
-        button.classList.add("active");
+    let currentMode = "encrypt";
+    let downloadURL = null;
 
-        const mode = button.dataset.action;
-        actionInput.value = mode;
+    // MESSAGE
+    function showMessage(text, type = "error") {
+        if (!message) return;
 
-        buttonText.textContent =
-            mode === "encrypt" ? "ENCRYPT MY FILE" : "DECRYPT MY FILE";
+        message.textContent = text;
+        message.className = `message ${type}`;
+        message.style.display = "block";
+    }
 
-        fileInput.accept = mode === "encrypt" ? ".txt" : ".bin";
+    function hideMessage() {
+        if (!message) return;
 
-        uploadArea.querySelector("small").textContent =
-            mode === "encrypt" ? "TEXT FILES • .TXT" : "ENCRYPTED FILES • .BIN";
+        message.textContent = "";
+        message.style.display = "none";
+    }
 
-        clearFile();
-        resetResult();
-        hideMessage();
+    // RESET RESULT
+    function resetResult() {
+        if (downloadURL) {
+            URL.revokeObjectURL(downloadURL);
+            downloadURL = null;
+        }
+
+        if (resultPanel) resultPanel.style.display = "none";
+
+        if (downloadLink) {
+            downloadLink.removeAttribute("href");
+        }
+    }
+
+    // MODE SWITCH
+    modeButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            currentMode = button.dataset.action;
+
+            modeButtons.forEach(btn => {
+                btn.classList.toggle("active", btn === button);
+            });
+
+            // Clear key whenever mode changes
+            keyInput.value = "";
+            keyInput.type = "password";
+
+            if (toggleKey) {
+                toggleKey.textContent = "Show";
+            }
+
+            updateStrength();
+            hideMessage();
+            resetResult();
+
+            if (fileInput) {
+                fileInput.value = "";
+            }
+
+            if (fileInfo) {
+                fileInfo.textContent = "No file selected";
+            }
+
+            if (actionInput) {
+                actionInput.value = currentMode;
+            }
+
+            if (uploadArea) {
+                uploadArea.classList.remove("drag-over");
+            }
+
+            if (buttonText) {
+                buttonText.textContent =
+                    currentMode === "encrypt"
+                        ? "ENCRYPT MY FILE"
+                        : "DECRYPT MY FILE";
+            }
+
+            if (fileInput) {
+                fileInput.accept =
+                    currentMode === "encrypt" ? ".txt" : ".bin";
+            }
+
+            const uploadText = uploadArea?.querySelector("small");
+
+            if (uploadText) {
+                uploadText.textContent =
+                    currentMode === "encrypt"
+                        ? "Supported format: .txt"
+                        : "Supported format: .bin";
+            }
+        });
     });
-});
 
-// FILE UPLOAD
-uploadArea.addEventListener("click", event => {
-    if (event.target === fileInput) return;
-    if (processBtn.disabled) return;
-    fileInput.click();
-});
+    // FILE SELECTION
+    function handleFile(file) {
+        if (!file) return;
 
-fileInput.addEventListener("change", () => {
-    if (fileInput.files.length) {
-        selectFile(fileInput.files[0]);
-    }
-});
+        const extension = file.name.split(".").pop().toLowerCase();
 
-function selectFile(file) {
-    const mode = actionInput.value;
-    const extension = file.name.split(".").pop().toLowerCase();
+        if (currentMode === "encrypt" && extension !== "txt") {
+            showMessage("Please select a .txt file for encryption.");
+            fileInput.value = "";
+            return;
+        }
 
-    if (mode === "encrypt" && extension !== "txt") {
-        showMessage("Please select a .txt file for encryption.", "error");
-        clearFile();
-        return;
-    }
+        if (currentMode === "decrypt" && extension !== "bin") {
+            showMessage("Please select a .bin file for decryption.");
+            fileInput.value = "";
+            return;
+        }
 
-    if (mode === "decrypt" && extension !== "bin") {
-        showMessage("Please select an encrypted .bin file for decryption.", "error");
-        clearFile();
-        return;
-    }
+        if (file.size === 0) {
+            showMessage("Selected file is empty.");
+            fileInput.value = "";
+            return;
+        }
 
-    if (file.size === 0) {
-        showMessage("This file is empty. Please select another file.", "error");
-        clearFile();
-        return;
+        hideMessage();
+        resetResult();
+
+        if (fileInfo) {
+            fileInfo.textContent =
+                `${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+        }
     }
 
-    selectedFile = file;
-    fileInfo.textContent = `✓ ${file.name} • ${formatSize(file.size)}`;
+    fileInput?.addEventListener("change", () => {
+        handleFile(fileInput.files[0]);
+    });
 
-    hideMessage();
-    resetResult();
-}
-
-function clearFile() {
-    selectedFile = null;
-    fileInput.value = "";
-    fileInfo.textContent = "";
-}
-
-function formatSize(bytes) {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
-
-// DRAG AND DROP
-["dragenter", "dragover"].forEach(eventName => {
-    uploadArea.addEventListener(eventName, event => {
+    // DRAG AND DROP
+    uploadArea?.addEventListener("dragover", event => {
         event.preventDefault();
         uploadArea.classList.add("drag-over");
     });
-});
 
-["dragleave", "drop"].forEach(eventName => {
-    uploadArea.addEventListener(eventName, event => {
-        event.preventDefault();
+    uploadArea?.addEventListener("dragleave", () => {
         uploadArea.classList.remove("drag-over");
     });
-});
 
-uploadArea.addEventListener("drop", event => {
-    if (processBtn.disabled) return;
+    uploadArea?.addEventListener("drop", event => {
+        event.preventDefault();
+        uploadArea.classList.remove("drag-over");
 
-    const file = event.dataTransfer.files[0];
-    if (file) selectFile(file);
-});
+        const file = event.dataTransfer.files[0];
 
-// SHOW / HIDE KEY
-toggleKey.addEventListener("click", () => {
-    const visible = keyInput.type === "text";
+        if (!file) return;
 
-    keyInput.type = visible ? "password" : "text";
-    toggleKey.textContent = visible ? "SHOW" : "HIDE";
-});
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
 
-// KEY STRENGTH INDICATOR
-keyInput.addEventListener("input", () => {
-    const key = keyInput.value;
-    let score = 0;
+        handleFile(file);
+    });
 
-    if (key.length >= 8) score++;
-    if (key.length >= 12) score++;
-    if (/[A-Z]/.test(key) && /[a-z]/.test(key)) score++;
-    if (/[0-9]/.test(key)) score++;
-    if (/[^A-Za-z0-9]/.test(key)) score++;
+    // SHOW / HIDE KEY
+    toggleKey?.addEventListener("click", () => {
+        if (keyInput.type === "password") {
+            keyInput.type = "text";
+            toggleKey.textContent = "Hide";
+        } else {
+            keyInput.type = "password";
+            toggleKey.textContent = "Show";
+        }
+    });
 
-    const levels = [
-        { width: "0%", text: "Waiting for encryption key", color: "#58636d" },
-        { width: "20%", text: "Very weak key", color: "#ff8294" },
-        { width: "40%", text: "Weak key", color: "#ffb36b" },
-        { width: "60%", text: "Moderate key", color: "#f0d477" },
-        { width: "80%", text: "Strong key", color: "#70c8ff" },
-        { width: "100%", text: "Excellent key", color: "#68e0b0" }
-    ];
+    // KEY STRENGTH
+    function updateStrength() {
+        const key = keyInput.value;
+        let score = 0;
 
-    const level = key.length === 0
-        ? levels[0]
-        : key.length < 8
-            ? levels[1]
-            : levels[score];
+        if (key.length >= 8) score++;
+        if (key.length >= 12) score++;
+        if (/[A-Z]/.test(key)) score++;
+        if (/[a-z]/.test(key)) score++;
+        if (/[0-9]/.test(key)) score++;
+        if (/[^A-Za-z0-9]/.test(key)) score++;
 
-    strengthBar.style.width = level.width;
-    strengthBar.style.background = level.color;
-    strengthText.textContent = level.text;
-});
+        const percentage = Math.round((score / 6) * 100);
 
-// FORM SUBMISSION
-document.getElementById("fileForm").addEventListener("submit", async event => {
-    event.preventDefault();
-
-    const key = keyInput.value.trim();
-    const action = actionInput.value;
-
-    hideMessage();
-    resetResult();
-
-    if (!selectedFile) {
-        showMessage("Please select a file first.", "error");
-        return;
-    }
-
-    if (!key) {
-        showMessage("Please enter your encryption key.", "error");
-        keyInput.focus();
-        return;
-    }
-
-    if (key.length < 8) {
-        showMessage("Your key must contain at least 8 characters.", "error");
-        keyInput.focus();
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("key", key);
-    formData.append("action", action);
-
-    processBtn.disabled = true;
-    buttonText.textContent = "PROCESSING FILE...";
-    processVisual.classList.add("processing");
-
-    try {
-        const response = await fetch("/process", {
-            method: "POST",
-            body: formData
-        });
-
-        if (!response.ok) {
-            let errorMessage = "File processing failed.";
-
-            try {
-                const data = await response.json();
-                errorMessage = data.error || errorMessage;
-            } catch (_) {}
-
-            throw new Error(errorMessage);
+        if (strengthBar) {
+            strengthBar.style.width = percentage + "%";
         }
 
-        const blob = await response.blob();
+        let label = "No key entered";
 
-        if (!blob.size) {
-            throw new Error("The processed file is empty.");
+        if (key.length > 0) {
+            if (key.length < 8) {
+                label = "Too short";
+            } else if (score <= 2) {
+                label = "Weak";
+            } else if (score <= 4) {
+                label = "Medium";
+            } else {
+                label = "Strong";
+            }
         }
 
-        if (downloadUrl) {
-            URL.revokeObjectURL(downloadUrl);
+        if (strengthText) {
+            strengthText.textContent = label;
         }
 
-        downloadUrl = URL.createObjectURL(blob);
+        if (keyFeedback) {
+            keyFeedback.textContent =
+                key.length > 0 && key.length < 8
+                    ? "Use at least 8 characters."
+                    : "";
+        }
+    }
 
-        const disposition = response.headers.get("Content-Disposition");
-        const match = disposition &&
-            disposition.match(/filename="?([^";]+)"?/i);
+    keyInput?.addEventListener("input", () => {
+        updateStrength();
+        hideMessage();
+    });
 
-        const filename = match
-            ? match[1]
-            : action === "encrypt"
+    // FORM SUBMISSION
+    fileForm?.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        hideMessage();
+        resetResult();
+
+        const file = fileInput.files[0];
+        const key = keyInput.value.trim();
+
+        if (!file) {
+            showMessage("Please select a file first.");
+            return;
+        }
+
+        if (!key) {
+            showMessage("Please enter your encryption key.");
+            keyInput.focus();
+            return;
+        }
+
+        if (key.length < 8) {
+            showMessage("Key must contain at least 8 characters.");
+            keyInput.focus();
+            return;
+        }
+
+        const extension = file.name.split(".").pop().toLowerCase();
+
+        if (currentMode === "encrypt" && extension !== "txt") {
+            showMessage("Encryption requires a .txt file.");
+            return;
+        }
+
+        if (currentMode === "decrypt" && extension !== "bin") {
+            showMessage("Decryption requires a .bin file.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("key", key);
+        formData.append("action", currentMode);
+
+        if (processBtn) {
+            processBtn.disabled = true;
+        }
+
+        if (buttonText) {
+            buttonText.textContent = "PROCESSING...";
+        }
+
+        if (processVisual) {
+            processVisual.classList.add("processing");
+        }
+
+        try {
+            const response = await fetch("/process", {
+                method: "POST",
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+
+                try {
+                    const errorData = JSON.parse(errorText);
+                    throw new Error(
+                        errorData.error || errorData.message || "Processing failed."
+                    );
+                } catch (error) {
+                    if (error.message !== "Processing failed.") {
+                        throw error;
+                    }
+
+                    throw new Error("File processing failed. Check your key and file.");
+                }
+            }
+
+            const blob = await response.blob();
+
+            if (blob.size === 0) {
+                throw new Error("The processed file is empty.");
+            }
+
+            downloadURL = URL.createObjectURL(blob);
+
+            const disposition = response.headers.get("Content-Disposition");
+            let filename = currentMode === "encrypt"
                 ? "encrypted_file.bin"
                 : "decrypted_file.txt";
 
-        downloadLink.href = downloadUrl;
-        downloadLink.download = filename;
+            if (disposition) {
+                const match = disposition.match(/filename="?([^"]+)"?/i);
 
-        resultText.textContent = action === "encrypt"
-            ? "Your encrypted file is ready to download."
-            : "Your decrypted file is ready to download.";
+                if (match) {
+                    filename = match[1];
+                }
+            }
 
-        resultPanel.classList.add("show");
-        showMessage("File processed successfully!", "success");
+            if (downloadLink) {
+                downloadLink.href = downloadURL;
+                downloadLink.download = filename;
+                downloadLink.style.display = "inline-block";
+            }
 
-    } catch (error) {
-        showMessage(error.message || "Something went wrong.", "error");
+            if (resultText) {
+                resultText.textContent =
+                    currentMode === "encrypt"
+                        ? "Your file has been encrypted successfully!"
+                        : "Your file has been decrypted successfully!";
+            }
 
-    } finally {
-        processBtn.disabled = false;
+            if (resultPanel) {
+                resultPanel.style.display = "block";
+            }
 
-        buttonText.textContent =
-            action === "encrypt" ? "ENCRYPT MY FILE" : "DECRYPT MY FILE";
+            showMessage("File processed successfully!", "success");
 
-        processVisual.classList.remove("processing");
+        } catch (error) {
+            showMessage(error.message || "Something went wrong.");
+        } finally {
+            if (processBtn) {
+                processBtn.disabled = false;
+            }
+
+            if (buttonText) {
+                buttonText.textContent =
+                    currentMode === "encrypt"
+                        ? "ENCRYPT MY FILE"
+                        : "DECRYPT MY FILE";
+            }
+
+            if (processVisual) {
+                processVisual.classList.remove("processing");
+            }
+        }
+    });
+
+    // FEATURE CARD INTERACTION
+    document.querySelectorAll(".feature-card").forEach(card => {
+        card.addEventListener("mousemove", event => {
+            const rect = card.getBoundingClientRect();
+
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            const rotateX = ((y / rect.height) - 0.5) * -8;
+            const rotateY = ((x / rect.width) - 0.5) * 8;
+
+            card.style.transform =
+                `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        card.addEventListener("mouseleave", () => {
+            card.style.transform =
+                "perspective(800px) rotateX(0deg) rotateY(0deg)";
+        });
+    });
+
+    // INITIAL SETTINGS
+    if (actionInput) {
+        actionInput.value = currentMode;
     }
-});
 
-// MESSAGE HELPERS
-function showMessage(text, type) {
-    message.textContent = text;
-    message.className = `message ${type}`;
-}
-
-function hideMessage() {
-    message.textContent = "";
-    message.className = "message";
-}
-
-function resetResult() {
-    resultPanel.classList.remove("show");
-
-    if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
-        downloadUrl = null;
+    if (fileInput) {
+        fileInput.accept = ".txt";
     }
 
-    downloadLink.removeAttribute("href");
-}
-
-// 3D FEATURE CARD MOVEMENT
-document.querySelectorAll(".feature-card").forEach(card => {
-    card.addEventListener("mousemove", event => {
-        if (window.matchMedia("(pointer: coarse)").matches) return;
-
-        const rect = card.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-
-        const rotateY = ((x / rect.width) - 0.5) * 9;
-        const rotateX = ((y / rect.height) - 0.5) * -9;
-
-        card.style.transform =
-            `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
-    });
-
-    card.addEventListener("mouseleave", () => {
-        card.style.transform = "";
-    });
-});
-
-// UPLOAD FEEDBACK
-uploadArea.addEventListener("dragenter", () => {
-    const symbol = uploadArea.querySelector(".upload-symbol");
-    if (symbol) symbol.style.transform = "scale(1.15) translateY(-5px)";
-});
-
-["dragleave", "drop"].forEach(eventName => {
-    uploadArea.addEventListener(eventName, () => {
-        const symbol = uploadArea.querySelector(".upload-symbol");
-        if (symbol) symbol.style.transform = "";
-    });
+    updateStrength();
 });

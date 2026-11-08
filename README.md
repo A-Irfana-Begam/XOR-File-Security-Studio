@@ -1,64 +1,62 @@
-# XOR File Security Studio 🔐
 
-A web-based Text File Encryption and Decryption application built using Python Flask and the XOR algorithm.
+# XOR Security Lab | Cyber Chrome
+
+A web-based file encryption and decryption application built using Python Flask and JavaScript.
 
 ## Features
 
-- Upload text files (.txt).
-- Encrypt files using the XOR algorithm.
-- Decrypt encrypted files using the same secret key.
-- Download encrypted and decrypted files.
-- Drag and drop file upload.
-- Responsive user interface.
-- Error handling and input validation.
+- XOR-based file encryption and decryption
+- Manual encryption key entry
+- Key strength indicator
+- Drag-and-drop file upload
+- TXT file encryption
+- BIN file decryption
+- Instant file download
+- Responsive metallic Cyber Chrome interface
 
 ## Technologies Used
 
 - Python
 - Flask
-- HTML5
-- CSS3
+- HTML
+- CSS
 - JavaScript
+- XOR Algorithm
+- Vercel
 
-## Installation
+## Supported Files
 
-1. Clone the repository.
+| Operation | Supported File |
+|---|---|
+| Encryption | .txt |
+| Decryption | .bin |
 
-2. Install dependencies:
+Maximum file size: 10 MB.
 
-   pip install -r requirements.txt
+## How to Use
 
-3. Run the application:
+1. Select Encrypt or Decrypt.
+2. Upload the supported file.
+3. Enter your encryption key (minimum 8 characters).
+4. Click the operation button.
+5. Download the processed file.
 
-   python app.py
+Use the same exact key for decryption that was used during encryption.
 
-4. Open your browser and visit:
+## Run Locally
 
-   http://127.0.0.1:5000
+Install dependencies:
 
-## How It Works
+pip install -r requirements.txt
 
-1. Select a text file.
-2. Enter a secret encryption key.
-3. Click Encrypt File.
-4. Download the encrypted file.
-5. Select the encrypted BIN file.
-6. Enter the same secret key.
-7. Click Decrypt File.
-8. Download the restored text file.
+Run the application:
 
-## XOR Algorithm
+python app.py
 
-The XOR operation is reversible:
+Open:
 
-A XOR B XOR B = A
+http://127.0.0.1:5000
 
-The same key is used for both encryption and decryption.
+## Important Note
 
-## Security Note
-
-This project demonstrates basic XOR encryption for educational purposes. Simple repeating-key XOR is not suitable for protecting sensitive real-world data.
-
-## Author
-
-Internship Project – Basic Text File Encryption using XOR.
+This project demonstrates the XOR encryption algorithm for educational purposes. Repeating-key XOR is not secure enough for protecting confidential or sensitive data.

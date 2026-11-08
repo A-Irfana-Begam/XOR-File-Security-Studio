@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,19 +76,27 @@
             </div>
 
             <div class="mode-switch">
-                <button class="operation-btn active" data-action="encrypt">
+                <button type="button" class="operation-btn active" data-action="encrypt">
                     ↗ Encrypt
                 </button>
-                <button class="operation-btn" data-action="decrypt">
+
+                <button type="button" class="operation-btn" data-action="decrypt">
                     ↙ Decrypt
                 </button>
             </div>
 
-            <form id="fileForm">
+            <form id="fileForm" enctype="multipart/form-data">
                 <input type="hidden" id="action" name="action" value="encrypt">
 
                 <div class="upload-area" id="uploadArea">
-                    <input type="file" id="fileInput" hidden accept=".txt">
+
+                    <input
+                        type="file"
+                        id="fileInput"
+                        name="file"
+                        accept=".txt"
+                        hidden
+                    >
 
                     <div class="upload-symbol">
                         <span>↑</span>
@@ -97,23 +106,29 @@
                     <p>Drag and drop or <span>browse your device</span></p>
                     <small>TEXT FILES • .TXT</small>
 
-                    <div id="fileInfo" class="file-info"></div>
+                    <div id="fileInfo" class="file-info">
+                        No file selected
+                    </div>
                 </div>
 
                 <div class="key-section">
+
                     <div class="label-row">
-                        <label>ENCRYPTION KEY</label>
+                        <label for="keyInput">ENCRYPTION KEY</label>
                         <span>PRIVATE KEY</span>
                     </div>
 
                     <div class="key-wrapper">
                         <span class="key-icon">⌑</span>
+
                         <input
                             type="password"
                             id="keyInput"
+                            name="key"
                             placeholder="Enter your secret key..."
                             autocomplete="off"
                         >
+
                         <button type="button" id="toggleKey">SHOW</button>
                     </div>
 
@@ -125,7 +140,7 @@
                     </div>
 
                     <p class="key-hint">
-                        ⓘ Use the same key to decrypt your file.
+                        ⓘ Enter the same key manually to decrypt your file.
                     </p>
                 </div>
 
@@ -141,22 +156,26 @@
                     <span id="buttonText">ENCRYPT MY FILE</span>
                     <span class="btn-arrow">↗</span>
                 </button>
+
             </form>
 
             <div id="message" class="message"></div>
 
-            <div id="resultPanel" class="result-panel">
+            <div id="resultPanel" class="result-panel" style="display:none;">
                 <div class="success-icon">✓</div>
+
                 <div class="result-content">
                     <h3>Operation completed!</h3>
                     <p id="resultText">Your file is ready.</p>
                 </div>
+
                 <a id="downloadLink" href="#" download>DOWNLOAD ↓</a>
             </div>
 
         </section>
 
         <section class="feature-grid">
+
             <article class="feature-card">
                 <span class="feature-icon">⌘</span>
                 <h3>XOR Algorithm</h3>
@@ -177,6 +196,7 @@
                 <p>Download your processed files directly to your device.</p>
                 <span class="feature-number">03</span>
             </article>
+
         </section>
 
         <footer>

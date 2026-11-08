@@ -1,3 +1,4 @@
+
 const fileInput = document.getElementById("fileInput");
 const uploadArea = document.getElementById("uploadArea");
 const fileInfo = document.getElementById("fileInfo");
@@ -17,9 +18,11 @@ const downloadLink = document.getElementById("downloadLink");
 let selectedFile = null;
 let downloadUrl = null;
 
-// Encrypt / Decrypt mode
+// ENCRYPT / DECRYPT MODE
 document.querySelectorAll(".operation-btn").forEach(button => {
     button.addEventListener("click", () => {
+        if (processBtn.disabled) return;
+
         document.querySelectorAll(".operation-btn")
             .forEach(btn => btn.classList.remove("active"));
 
@@ -36,14 +39,16 @@ document.querySelectorAll(".operation-btn").forEach(button => {
         uploadArea.querySelector("small").textContent =
             mode === "encrypt" ? "TEXT FILES • .TXT" : "ENCRYPTED FILES • .BIN";
 
-        resetResult();
         clearFile();
+        resetResult();
+        hideMessage();
     });
 });
 
-// Upload file
+// FILE UPLOAD
 uploadArea.addEventListener("click", event => {
     if (event.target === fileInput) return;
+    if (processBtn.disabled) return;
     fileInput.click();
 });
 
@@ -76,8 +81,7 @@ function selectFile(file) {
     }
 
     selectedFile = file;
-    fileInfo.textContent =
-        `✓ ${file.name} • ${formatSize(file.size)}`;
+    fileInfo.textContent = `✓ ${file.name} • ${formatSize(file.size)}`;
 
     hideMessage();
     resetResult();
@@ -95,7 +99,7 @@ function formatSize(bytes) {
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
-// Drag and drop
+// DRAG AND DROP
 ["dragenter", "dragover"].forEach(eventName => {
     uploadArea.addEventListener(eventName, event => {
         event.preventDefault();
@@ -111,14 +115,13 @@ function formatSize(bytes) {
 });
 
 uploadArea.addEventListener("drop", event => {
-    const file = event.dataTransfer.files[0];
+    if (processBtn.disabled) return;
 
-    if (file) {
-        selectFile(file);
-    }
+    const file = event.dataTransfer.files[0];
+    if (file) selectFile(file);
 });
 
-// Show / hide key
+// SHOW / HIDE KEY
 toggleKey.addEventListener("click", () => {
     const visible = keyInput.type === "text";
 
@@ -126,7 +129,7 @@ toggleKey.addEventListener("click", () => {
     toggleKey.textContent = visible ? "SHOW" : "HIDE";
 });
 
-// Key strength indicator
+// KEY STRENGTH INDICATOR
 keyInput.addEventListener("input", () => {
     const key = keyInput.value;
     let score = 0;
@@ -138,7 +141,7 @@ keyInput.addEventListener("input", () => {
     if (/[^A-Za-z0-9]/.test(key)) score++;
 
     const levels = [
-        { width: "0%", text: "Waiting for encryption key", color: "#26384c" },
+        { width: "0%", text: "Waiting for encryption key", color: "#58636d" },
         { width: "20%", text: "Very weak key", color: "#ff8294" },
         { width: "40%", text: "Weak key", color: "#ffb36b" },
         { width: "60%", text: "Moderate key", color: "#f0d477" },
@@ -146,14 +149,18 @@ keyInput.addEventListener("input", () => {
         { width: "100%", text: "Excellent key", color: "#68e0b0" }
     ];
 
-    const level = key.length === 0 ? levels[0] : levels[score];
+    const level = key.length === 0
+        ? levels[0]
+        : key.length < 8
+            ? levels[1]
+            : levels[score];
 
     strengthBar.style.width = level.width;
     strengthBar.style.background = level.color;
     strengthText.textContent = level.text;
 });
 
-// Form submission
+// FORM SUBMISSION
 document.getElementById("fileForm").addEventListener("submit", async event => {
     event.preventDefault();
 
@@ -175,7 +182,7 @@ document.getElementById("fileForm").addEventListener("submit", async event => {
     }
 
     if (key.length < 8) {
-        showMessage("Use a key with at least 8 characters for better protection.", "error");
+        showMessage("Your key must contain at least 8 characters.", "error");
         keyInput.focus();
         return;
     }
@@ -208,6 +215,10 @@ document.getElementById("fileForm").addEventListener("submit", async event => {
 
         const blob = await response.blob();
 
+        if (!blob.size) {
+            throw new Error("The processed file is empty.");
+        }
+
         if (downloadUrl) {
             URL.revokeObjectURL(downloadUrl);
         }
@@ -215,7 +226,8 @@ document.getElementById("fileForm").addEventListener("submit", async event => {
         downloadUrl = URL.createObjectURL(blob);
 
         const disposition = response.headers.get("Content-Disposition");
-        const match = disposition && disposition.match(/filename="?([^"]+)"?/);
+        const match = disposition &&
+            disposition.match(/filename="?([^";]+)"?/i);
 
         const filename = match
             ? match[1]
@@ -226,10 +238,9 @@ document.getElementById("fileForm").addEventListener("submit", async event => {
         downloadLink.href = downloadUrl;
         downloadLink.download = filename;
 
-        resultText.textContent =
-            action === "encrypt"
-                ? "Your encrypted file is ready to download."
-                : "Your decrypted file is ready to download.";
+        resultText.textContent = action === "encrypt"
+            ? "Your encrypted file is ready to download."
+            : "Your decrypted file is ready to download.";
 
         resultPanel.classList.add("show");
         showMessage("File processed successfully!", "success");
@@ -239,6 +250,7 @@ document.getElementById("fileForm").addEventListener("submit", async event => {
 
     } finally {
         processBtn.disabled = false;
+
         buttonText.textContent =
             action === "encrypt" ? "ENCRYPT MY FILE" : "DECRYPT MY FILE";
 
@@ -246,6 +258,7 @@ document.getElementById("fileForm").addEventListener("submit", async event => {
     }
 });
 
+// MESSAGE HELPERS
 function showMessage(text, type) {
     message.textContent = text;
     message.className = `message ${type}`;
@@ -265,28 +278,9 @@ function resetResult() {
     }
 
     downloadLink.removeAttribute("href");
-}s
-
-// ===== FLOATING OCEAN PARTICLES =====
-
-for (let i = 0; i < 24; i++) {
-    const particle = document.createElement("span");
-    particle.className = "ocean-particle";
-
-    particle.style.left = Math.random() * 100 + "vw";
-    particle.style.animationDuration = (8 + Math.random() * 12) + "s";
-    particle.style.animationDelay = (Math.random() * 12) + "s";
-    particle.style.opacity = Math.random() * 0.7 + 0.2;
-
-    const size = 2 + Math.random() * 4;
-    particle.style.width = size + "px";
-    particle.style.height = size + "px";
-
-    document.body.appendChild(particle);
 }
 
-// ===== 3D FEATURE CARD MOVEMENT =====
-
+// 3D FEATURE CARD MOVEMENT
 document.querySelectorAll(".feature-card").forEach(card => {
     card.addEventListener("mousemove", event => {
         if (window.matchMedia("(pointer: coarse)").matches) return;
@@ -307,17 +301,15 @@ document.querySelectorAll(".feature-card").forEach(card => {
     });
 });
 
-// ===== UPLOAD FEEDBACK =====
-
+// UPLOAD FEEDBACK
 uploadArea.addEventListener("dragenter", () => {
-    uploadArea.querySelector(".upload-symbol").style.transform =
-        "scale(1.15) translateY(-5px)";
+    const symbol = uploadArea.querySelector(".upload-symbol");
+    if (symbol) symbol.style.transform = "scale(1.15) translateY(-5px)";
 });
 
-uploadArea.addEventListener("dragleave", () => {
-    uploadArea.querySelector(".upload-symbol").style.transform = "";
-});
-
-uploadArea.addEventListener("drop", () => {
-    uploadArea.querySelector(".upload-symbol").style.transform = "";
+["dragleave", "drop"].forEach(eventName => {
+    uploadArea.addEventListener(eventName, () => {
+        const symbol = uploadArea.querySelector(".upload-symbol");
+        if (symbol) symbol.style.transform = "";
+    });
 });

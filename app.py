@@ -39,12 +39,12 @@ def process_file():
         if not uploaded_file or not uploaded_file.filename:
             return jsonify({"error": "Please select a file."}), 400
 
-        if not key or not key.strip():
+        if not key.strip():
             return jsonify({"error": "Please enter an encryption key."}), 400
 
         if len(key) < 8:
             return jsonify({
-                "error": "Your key must contain at least 8 characters."
+                "error": "Key must contain at least 8 characters."
             }), 400
 
         if action not in ("encrypt", "decrypt"):
@@ -55,26 +55,26 @@ def process_file():
 
         if action == "encrypt" and extension != ".txt":
             return jsonify({
-                "error": "Encryption supports only .txt files."
+                "error": "Please select a .txt file for encryption."
             }), 400
 
         if action == "decrypt" and extension != ".bin":
             return jsonify({
-                "error": "Decryption supports only .bin files."
+                "error": "Please select a .bin file for decryption."
             }), 400
 
         data = uploaded_file.read()
 
         if not data:
-            return jsonify({"error": "File is empty."}), 400
+            return jsonify({"error": "Selected file is empty."}), 400
 
         result = xor_encrypt_decrypt(data, key)
-        name = Path(filename).stem
+        stem = Path(filename).stem
 
         output_name = (
-            f"{name}_encrypted.bin"
+            f"{stem}_encrypted.bin"
             if action == "encrypt"
-            else f"{name}_decrypted.txt"
+            else f"{stem}_decrypted.txt"
         )
 
         return send_file(
@@ -85,7 +85,7 @@ def process_file():
         )
 
     except Exception:
-        app.logger.exception("File processing failed")
+        app.logger.exception("File processing error")
         return jsonify({
             "error": "File processing failed. Please try again."
         }), 500
@@ -94,7 +94,7 @@ def process_file():
 @app.errorhandler(413)
 def file_too_large(error):
     return jsonify({
-        "error": "File size exceeds the 10 MB limit."
+        "error": "Maximum file size is 10 MB."
     }), 413
 
 

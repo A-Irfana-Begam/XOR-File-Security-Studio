@@ -6,7 +6,7 @@ from pathlib import Path
 app = Flask(
     __name__,
     static_folder="public",
-    static_url_path="/static"
+    static_url_path=""
 )
 
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
@@ -15,12 +15,9 @@ app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 def xor_encrypt_decrypt(data, key):
     key_bytes = key.encode("utf-8")
 
-    if not key_bytes:
-        raise ValueError("Encryption key is required.")
-
     return bytes(
-        byte ^ key_bytes[i % len(key_bytes)]
-        for i, byte in enumerate(data)
+        byte ^ key_bytes[index % len(key_bytes)]
+        for index, byte in enumerate(data)
     )
 
 
@@ -42,9 +39,19 @@ def process_file():
         if not key.strip():
             return jsonify({"error": "Please enter an encryption key."}), 400
 
-        if len(key) < 8:
+        if len(key) < 12:
             return jsonify({
-                "error": "Key must contain at least 8 characters."
+                "error": "Key must contain at least 12 characters."
+            }), 400
+
+        if (
+            not any(char.isupper() for char in key)
+            or not any(char.islower() for char in key)
+            or not any(char.isdigit() for char in key)
+            or not any(not char.isalnum() for char in key)
+        ):
+            return jsonify({
+                "error": "Use uppercase, lowercase, numbers and special characters in your key."
             }), 400
 
         if action not in ("encrypt", "decrypt"):
@@ -69,6 +76,7 @@ def process_file():
             return jsonify({"error": "Selected file is empty."}), 400
 
         result = xor_encrypt_decrypt(data, key)
+
         stem = Path(filename).stem
 
         output_name = (

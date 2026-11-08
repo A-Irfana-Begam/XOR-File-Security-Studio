@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#101317">
-    <title>XOR Security Lab | Cyber Chrome</title>
+    <title>XORLAB | File Security Studio</title>
     <link rel="stylesheet" href="/style.css">
 </head>
+
 <body>
 
     <!-- CHROME BACKGROUND -->
@@ -33,133 +34,192 @@
 
     <!-- NAVBAR -->
     <header class="navbar">
+
         <a href="/" class="brand">
-            <div class="brand-logo">⌑</div>
-            <span>XOR <span class="brand-blue">SECURITY LAB</span></span>
+            <div class="brand-logo">X</div>
+            <span>XORLAB</span>
         </a>
 
         <div class="system-status">
             <span class="live-dot"></span>
-            SYSTEM ONLINE
+            ENCRYPTION SYSTEM ONLINE
         </div>
+
     </header>
 
     <main class="main-container">
 
-        <!-- HERO -->
+        <!-- HERO SECTION -->
         <section class="hero">
-            <div class="hero-tag">◆ ADVANCED FILE SECURITY SYSTEM</div>
 
-            <h1>Protect Your Files<br>
-                With <span>XOR Encryption</span>
+            <div class="hero-tag">
+                ✦ ADVANCED FILE SECURITY
+            </div>
+
+            <h1>
+                Your Files.<br>
+                <span>Your Privacy.</span>
             </h1>
 
             <p>
-                Secure your text files with XOR encryption.
-                Encrypt and decrypt your data using a private security key.
+                Transform ordinary text files into encrypted data
+                using the power of XOR cryptography.
             </p>
 
             <div class="hero-stats">
+
                 <div>
-                    <strong>256-bit</strong>
-                    <span>KEY SUPPORT</span>
+                    <strong>01</strong>
+                    <span>UPLOAD</span>
                 </div>
 
                 <div class="stat-line"></div>
 
                 <div>
-                    <strong>100%</strong>
-                    <span>LOCAL PROCESSING</span>
+                    <strong>02</strong>
+                    <span>ENCRYPT</span>
                 </div>
 
                 <div class="stat-line"></div>
 
                 <div>
-                    <strong>TXT</strong>
-                    <span>FILE FORMAT</span>
+                    <strong>03</strong>
+                    <span>PROTECT</span>
                 </div>
+
             </div>
+
         </section>
 
         <!-- ENCRYPTION DASHBOARD -->
         <section class="dashboard">
 
             <div class="dashboard-header">
+
                 <div>
-                    <div class="eyebrow">SECURITY CONSOLE / 01</div>
+                    <div class="eyebrow">
+                        SECURITY CONSOLE / 01
+                    </div>
+
                     <h2>File Encryption Studio</h2>
                 </div>
 
-                <div class="session-badge">● SECURE SESSION</div>
+                <div class="session-badge">
+                    ● SECURE SESSION
+                </div>
+
             </div>
 
             <!-- MODE SWITCH -->
             <div class="mode-switch">
-                <button type="button"
-                        class="operation-btn active"
-                        id="encryptBtn"
-                        data-action="encrypt">
+
+                <button
+                    type="button"
+                    class="operation-btn active"
+                    id="encryptBtn"
+                    data-action="encrypt">
+
                     ↗ Encrypt File
+
                 </button>
 
-                <button type="button"
-                        class="operation-btn"
-                        id="decryptBtn"
-                        data-action="decrypt">
+                <button
+                    type="button"
+                    class="operation-btn"
+                    id="decryptBtn"
+                    data-action="decrypt">
+
                     ↙ Decrypt File
+
                 </button>
+
             </div>
 
-            <!-- FILE UPLOAD -->
+            <!-- FILE PROCESSING FORM -->
             <form id="processForm">
 
-                <input type="hidden" id="actionInput"
-                       name="action" value="encrypt">
+                <input
+                    type="hidden"
+                    id="actionInput"
+                    name="action"
+                    value="encrypt"
+                >
 
-                <input type="file" id="fileInput"
-                       name="file" accept=".txt"
-                       hidden>
+                <input
+                    type="file"
+                    id="fileInput"
+                    name="file"
+                    accept=".txt"
+                    hidden
+                >
 
-                <div class="upload-area" id="uploadArea"
-                     role="button" tabindex="0">
+                <!-- UPLOAD AREA -->
+                <div
+                    class="upload-area"
+                    id="uploadArea"
+                    role="button"
+                    tabindex="0"
+                >
 
                     <div class="upload-symbol">↑</div>
 
-                    <h3 id="uploadTitle">Drop your TXT file here</h3>
+                    <h3 id="uploadTitle">
+                        Drop your TXT file here
+                    </h3>
 
                     <p>
                         Drag and drop or
                         <span>browse files</span>
                     </p>
 
-                    <small>SUPPORTED FORMAT: .TXT</small>
+                    <small>
+                        SUPPORTED FORMAT: .TXT
+                    </small>
 
-                    <div class="file-info" id="fileInfo"></div>
+                    <div
+                        class="file-info"
+                        id="fileInfo">
+                    </div>
+
                 </div>
 
                 <!-- KEY SECTION -->
                 <div class="key-section">
 
                     <div class="label-row">
-                        <label for="keyInput">ENCRYPTION KEY</label>
-                        <span>MINIMUM 8 CHARACTERS</span>
+
+                        <label for="keyInput">
+                            ENCRYPTION KEY
+                        </label>
+
+                        <span>
+                            MINIMUM 8 CHARACTERS
+                        </span>
+
                     </div>
 
                     <div class="key-wrapper">
+
                         <span class="key-icon">⌑</span>
 
-                        <input type="password"
-                               id="keyInput"
-                               name="key"
-                               placeholder="Enter your secret key"
-                               autocomplete="off">
+                        <input
+                            type="password"
+                            id="keyInput"
+                            name="key"
+                            placeholder="Enter your secret key"
+                            autocomplete="off"
+                        >
 
-                        <button type="button" id="toggleKey">
+                        <button
+                            type="button"
+                            id="toggleKey">
                             SHOW
                         </button>
+
                     </div>
 
                     <div class="key-feedback">
+
                         <div class="strength-track">
                             <span id="strengthBar"></span>
                         </div>
@@ -167,84 +227,157 @@
                         <span id="strengthText">
                             Key strength: Not entered
                         </span>
+
                     </div>
 
                     <p class="key-hint">
-                        Use a strong key containing uppercase, lowercase,
-                        numbers and special characters.
+                        Use a strong key containing uppercase,
+                        lowercase, numbers and special characters.
                     </p>
+
                 </div>
 
                 <!-- PROCESS VISUAL -->
-                <div class="process-visual" id="processVisual">
-                    <div class="process-node active-node">INPUT</div>
-                    <div class="process-line"><span></span></div>
-                    <div class="process-node">XOR</div>
-                    <div class="process-line"><span></span></div>
-                    <div class="process-node">OUTPUT</div>
+                <div
+                    class="process-visual"
+                    id="processVisual">
+
+                    <div class="process-node active-node">
+                        INPUT
+                    </div>
+
+                    <div class="process-line">
+                        <span></span>
+                    </div>
+
+                    <div class="process-node">
+                        XOR
+                    </div>
+
+                    <div class="process-line">
+                        <span></span>
+                    </div>
+
+                    <div class="process-node">
+                        OUTPUT
+                    </div>
+
                 </div>
 
                 <!-- PROCESS BUTTON -->
-                <button type="submit" class="process-btn"
-                        id="processBtn">
-                    <span id="buttonText">ENCRYPT FILE</span>
+                <button
+                    type="submit"
+                    class="process-btn"
+                    id="processBtn">
+
+                    <span id="buttonText">
+                        ENCRYPT FILE
+                    </span>
+
                     <span class="btn-arrow">→</span>
+
                 </button>
 
             </form>
 
             <!-- MESSAGE -->
-            <div class="message" id="message"></div>
+            <div
+                class="message"
+                id="message">
+            </div>
 
-            <!-- RESULT -->
-            <div class="result-panel" id="resultPanel">
+            <!-- RESULT PANEL -->
+            <div
+                class="result-panel"
+                id="resultPanel">
+
                 <div class="success-icon">✓</div>
 
                 <div class="result-content">
-                    <h3 id="resultTitle">Processing Complete</h3>
-                    <p id="resultText">Your file is ready.</p>
+
+                    <h3 id="resultTitle">
+                        Processing Complete
+                    </h3>
+
+                    <p id="resultText">
+                        Your file is ready.
+                    </p>
+
                 </div>
 
-                <a id="downloadLink" href="#" download>
+                <a
+                    id="downloadLink"
+                    href="#"
+                    download>
                     DOWNLOAD ↓
                 </a>
+
             </div>
 
         </section>
 
-        <!-- FEATURES -->
+        <!-- FEATURE CARDS -->
         <section class="feature-grid">
 
             <div class="feature-card">
+
                 <div class="feature-icon">⌑</div>
+
                 <h3>XOR Encryption</h3>
-                <p>Transform readable text into encrypted binary data using a secret key.</p>
+
+                <p>
+                    Transform readable text into encrypted
+                    binary data using a secret key.
+                </p>
+
                 <span class="feature-number">01</span>
+
             </div>
 
             <div class="feature-card">
+
                 <div class="feature-icon">◇</div>
+
                 <h3>Secure Key</h3>
-                <p>Use your private key to protect and recover your text file.</p>
+
+                <p>
+                    Use your private key to protect
+                    and recover your text file.
+                </p>
+
                 <span class="feature-number">02</span>
+
             </div>
 
             <div class="feature-card">
+
                 <div class="feature-icon">↻</div>
+
                 <h3>Easy Recovery</h3>
-                <p>Decrypt your encrypted file with the same secret key.</p>
+
+                <p>
+                    Decrypt your encrypted file
+                    with the same secret key.
+                </p>
+
                 <span class="feature-number">03</span>
+
             </div>
 
         </section>
 
+        <!-- FOOTER -->
         <footer>
-            <span>© 2026 XOR SECURITY LAB</span>
+
+            <span>© 2026 XORLAB</span>
+
             <span>POWERED BY XOR CRYPTOGRAPHY</span>
+
         </footer>
 
     </main>
 
     <script src="/script.js"></script>
+
 </body>
 </html>

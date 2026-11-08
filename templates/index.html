@@ -95,7 +95,7 @@
                         id="fileInput"
                         name="file"
                         accept=".txt"
-                        hidden
+                        aria-label="Choose a file to encrypt or decrypt"
                     >
 
                     <div class="upload-symbol">
@@ -159,9 +159,9 @@
 
             </form>
 
-            <div id="message" class="message"></div>
+            <div id="message" class="message" role="status" aria-live="polite"></div>
 
-            <div id="resultPanel" class="result-panel" style="display:none;">
+            <div id="resultPanel" class="result-panel">
                 <div class="success-icon">✓</div>
 
                 <div class="result-content">

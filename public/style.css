@@ -794,3 +794,197 @@ footer {
         margin-left: 50px;
     }
 }
+
+/* ===== OCEAN ANIMATION EFFECTS ===== */
+
+.ambient {
+    animation: oceanFloat 8s ease-in-out infinite alternate;
+}
+
+@keyframes oceanFloat {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(45px, 35px) scale(1.18); }
+}
+
+/* Floating particles */
+.ocean-particle {
+    position: fixed;
+    bottom: -20px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #42faff;
+    box-shadow: 0 0 12px #19e5ed, 0 0 25px #19e5ed;
+    pointer-events: none;
+    z-index: 0;
+    animation: particleRise linear infinite;
+}
+
+@keyframes particleRise {
+    0% {
+        transform: translateY(0) scale(.4);
+        opacity: 0;
+    }
+    15% { opacity: .8; }
+    85% { opacity: .6; }
+    100% {
+        transform: translateY(-110vh) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Dashboard entrance */
+.dashboard,
+.hero,
+.feature-card {
+    animation: oceanReveal .8s ease both;
+}
+
+.dashboard {
+    animation-delay: .15s;
+}
+
+.feature-card:nth-child(2) {
+    animation-delay: .15s;
+}
+
+.feature-card:nth-child(3) {
+    animation-delay: .3s;
+}
+
+@keyframes oceanReveal {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Interactive upload glow */
+.upload-area {
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-area::before {
+    content: "";
+    position: absolute;
+    width: 40%;
+    height: 200%;
+    top: -50%;
+    left: -100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(75, 250, 255, .13),
+        transparent
+    );
+    transform: rotate(25deg);
+    transition: left .7s ease;
+    pointer-events: none;
+}
+
+.upload-area:hover::before {
+    left: 150%;
+}
+
+.upload-symbol {
+    transition: transform .35s ease, box-shadow .35s ease;
+}
+
+.upload-area:hover .upload-symbol {
+    transform: translateY(-7px) scale(1.1);
+    box-shadow: 0 0 30px rgba(25, 229, 237, .4);
+}
+
+/* Button ripple and glow */
+.process-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.process-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        110deg,
+        transparent 20%,
+        rgba(255,255,255,.3),
+        transparent 80%
+    );
+    transform: translateX(-110%);
+    transition: transform .65s ease;
+}
+
+.process-btn:hover::before {
+    transform: translateX(110%);
+}
+
+.process-btn:active {
+    transform: scale(.98);
+}
+
+/* Animated processing nodes */
+.process-visual.processing .process-node {
+    animation: nodePulse .8s ease-in-out infinite alternate;
+}
+
+.process-visual.processing .process-node:nth-child(3) {
+    animation-delay: .2s;
+}
+
+.process-visual.processing .process-node:nth-child(5) {
+    animation-delay: .4s;
+}
+
+@keyframes nodePulse {
+    from {
+        border-color: rgba(25, 229, 237, .3);
+        box-shadow: 0 0 5px rgba(25, 229, 237, .1);
+    }
+    to {
+        border-color: #19e5ed;
+        box-shadow: 0 0 22px rgba(25, 229, 237, .5);
+        color: #72faff;
+    }
+}
+
+/* Feature card interaction */
+.feature-card {
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform .18s ease, border-color .3s, box-shadow .3s;
+}
+
+.feature-card:hover .feature-icon {
+    transform: translateZ(25px) rotate(-8deg);
+    box-shadow: 0 0 20px rgba(25, 229, 237, .3);
+}
+
+.feature-icon {
+    transition: .3s;
+}
+
+/* Mode switch animation */
+.operation-btn {
+    transition: background .3s, color .3s, transform .2s;
+}
+
+.operation-btn:active {
+    transform: scale(.96);
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}

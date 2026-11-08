@@ -3,6 +3,7 @@ const fileInput = document.getElementById("fileInput");
 const uploadArea = document.getElementById("uploadArea");
 const fileInfo = document.getElementById("fileInfo");
 const uploadTitle = document.getElementById("uploadTitle");
+const supportedFormat = document.getElementById("supportedFormat");
 
 const keyInput = document.getElementById("keyInput");
 const toggleKey = document.getElementById("toggleKey");
@@ -56,6 +57,7 @@ function updateFileType() {
     }
 
     fileInput.accept = action === "encrypt" ? ".txt" : ".bin";
+    supportedFormat.textContent = action === "encrypt" ? ".TXT" : ".BIN";
 
     uploadTitle.textContent = action === "encrypt"
         ? "Drop your TXT file here"

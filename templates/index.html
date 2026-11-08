@@ -1,13 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#101317">
+
     <title>XOR Security Lab | Cyber Chrome</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
@@ -28,10 +29,14 @@
     </nav>
 
     <main>
+
         <section class="hero">
             <div class="hero-tag">✦ ADVANCED FILE SECURITY SYSTEM</div>
 
-            <h1>YOUR FILES.<br><span>YOUR PRIVACY.</span></h1>
+            <h1>
+                YOUR FILES.<br>
+                <span>YOUR PRIVACY.</span>
+            </h1>
 
             <p>
                 Experience a powerful file encryption environment.
@@ -44,10 +49,12 @@
                     <strong>256-BIT</strong>
                     <span>KEY INPUT SUPPORT</span>
                 </div>
+
                 <div>
                     <strong>10 MB</strong>
                     <span>MAX FILE SIZE</span>
                 </div>
+
                 <div>
                     <strong>100%</strong>
                     <span>LOCAL PROCESSING</span>
@@ -56,20 +63,28 @@
         </section>
 
         <section class="dashboard">
+
             <div class="dashboard-header">
                 <div>
                     <h2>Encryption Workspace</h2>
                     <p>Configure your file security operation</p>
                 </div>
+
                 <div class="session-badge">● SECURE SESSION</div>
             </div>
 
             <div class="mode-switch">
-                <button type="button" class="operation-btn active" data-action="encrypt">
+                <button
+                    type="button"
+                    class="operation-btn active"
+                    data-action="encrypt">
                     ENCRYPT FILE
                 </button>
 
-                <button type="button" class="operation-btn" data-action="decrypt">
+                <button
+                    type="button"
+                    class="operation-btn"
+                    data-action="decrypt">
                     DECRYPT FILE
                 </button>
             </div>
@@ -77,6 +92,7 @@
             <form id="fileForm" enctype="multipart/form-data">
 
                 <div class="upload-area" id="uploadArea">
+
                     <input
                         type="file"
                         id="fileInput"
@@ -85,21 +101,30 @@
                     >
 
                     <div class="upload-content">
+
                         <div class="upload-icon">⇧</div>
 
                         <h3>Drop your file here</h3>
+
                         <p>or click to browse your device</p>
 
-                        <span id="fileTypeHint">TEXT FILES • .TXT</span>
+                        <span id="fileTypeHint">
+                            TEXT FILES • .TXT
+                        </span>
 
-                        <div id="fileInfo">No file selected</div>
+                        <div id="fileInfo">
+                            No file selected
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="key-section">
+
                     <label for="keyInput">ENCRYPTION KEY</label>
 
                     <div class="key-input-wrapper">
+
                         <input
                             type="password"
                             id="keyInput"
@@ -107,18 +132,33 @@
                             autocomplete="off"
                         >
 
-                        <button type="button" id="toggleKey">SHOW</button>
+                        <button
+                            type="button"
+                            id="toggleKey">
+                            SHOW
+                        </button>
+
                     </div>
 
                     <div class="strength-container">
+
                         <div class="strength-track">
                             <div id="strengthBar"></div>
                         </div>
-                        <span id="strengthText">KEY STRENGTH: NOT SET</span>
+
+                        <span id="strengthText">
+                            KEY STRENGTH: NOT SET
+                        </span>
+
                     </div>
                 </div>
 
-                <input type="hidden" id="action" name="action" value="encrypt">
+                <input
+                    type="hidden"
+                    id="action"
+                    name="action"
+                    value="encrypt"
+                >
 
                 <button type="submit" id="processBtn">
                     <span id="processVisual"></span>
@@ -128,40 +168,68 @@
                 <div id="message" class="message"></div>
 
                 <div id="resultPanel">
+
                     <h3>✓ PROCESS COMPLETED</h3>
+
                     <p id="resultText"></p>
-                    <a id="downloadLink" href="#" download>DOWNLOAD FILE</a>
+
+                    <a
+                        id="downloadLink"
+                        href="#"
+                        download>
+                        DOWNLOAD FILE
+                    </a>
+
                 </div>
 
             </form>
         </section>
 
         <section class="feature-grid">
+
             <article class="feature-card">
                 <div class="feature-icon">◇</div>
+
                 <h3>XOR Encryption</h3>
-                <p>Transform readable text data into an encrypted binary file using a repeating-key XOR operation.</p>
+
+                <p>
+                    Transform readable text data into an encrypted
+                    binary file using a repeating-key XOR operation.
+                </p>
             </article>
 
             <article class="feature-card">
                 <div class="feature-icon">⌘</div>
+
                 <h3>Secure Key Input</h3>
-                <p>Enter your own key and monitor its character strength through the live indicator.</p>
+
+                <p>
+                    Enter your own key and monitor its character
+                    strength through the live indicator.
+                </p>
             </article>
 
             <article class="feature-card">
                 <div class="feature-icon">↻</div>
+
                 <h3>Instant Decryption</h3>
-                <p>Restore your encrypted file using the same key used during the encryption process.</p>
+
+                <p>
+                    Restore your encrypted file using the same
+                    key used during the encryption process.
+                </p>
             </article>
+
         </section>
+
     </main>
 
     <footer>
         XOR SECURITY LAB · CYBER CHROME EDITION · EDUCATIONAL PROJECT
     </footer>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- JavaScript -->
+    <script src="/script.js"></script>
 
 </body>
 </html>

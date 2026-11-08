@@ -7,15 +7,9 @@
 }
 
 :root {
-    --bg: #101317;
-    --panel: rgba(29, 34, 40, 0.88);
     --silver: #d9e0e6;
     --muted: #929ba5;
     --line: rgba(205, 216, 226, 0.15);
-    --accent: #c5d0d9;
-    --accent-dark: #778590;
-    --success: #8dd9b0;
-    --danger: #ff8585;
 }
 
 body {
@@ -83,7 +77,7 @@ body {
     to { transform: translateY(45px); }
 }
 
-/* Decorative chrome lock */
+/* Chrome lock */
 
 .lock-scene {
     position: fixed;
@@ -165,7 +159,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* Navigation */
+/* Navbar */
 
 .navbar {
     width: min(1180px, 90%);
@@ -203,12 +197,14 @@ body {
     background: rgba(141, 217, 176, 0.06);
 }
 
-/* Hero section */
+/* Main layout */
 
 main {
     width: min(1000px, 90%);
     margin: auto;
 }
+
+/* Hero */
 
 .hero {
     padding: 76px 0 45px;
@@ -277,7 +273,7 @@ main {
     letter-spacing: 1.5px;
 }
 
-/* Workspace panel */
+/* Dashboard */
 
 .dashboard {
     position: relative;
@@ -286,7 +282,7 @@ main {
     border-radius: 14px;
     background:
         linear-gradient(145deg, rgba(48, 57, 66, 0.55), rgba(21, 26, 31, 0.94)),
-        var(--panel);
+        rgba(29, 34, 40, 0.88);
     box-shadow:
         0 25px 70px rgba(0, 0, 0, 0.35),
         inset 0 1px 0 rgba(255,255,255,0.08);
@@ -305,7 +301,6 @@ main {
     color: #e7edf2;
     font-family: 'Orbitron', sans-serif;
     font-size: 17px;
-    letter-spacing: 0.5px;
 }
 
 .dashboard-header p {
@@ -321,7 +316,7 @@ main {
     white-space: nowrap;
 }
 
-/* Encrypt / decrypt buttons */
+/* Mode buttons */
 
 .mode-switch {
     display: grid;
@@ -359,7 +354,7 @@ main {
     box-shadow: 0 4px 18px rgba(200, 215, 226, 0.15);
 }
 
-/* File upload area */
+/* Upload area */
 
 .upload-area {
     position: relative;
@@ -539,7 +534,7 @@ main {
     white-space: nowrap;
 }
 
-/* Main action button */
+/* Process button */
 
 #processBtn {
     position: relative;
@@ -583,7 +578,7 @@ main {
     box-shadow: 0 0 9px rgba(76, 98, 111, 0.5);
 }
 
-/* Messages and result */
+/* Messages */
 
 .message {
     display: none;
@@ -608,6 +603,8 @@ main {
     background: rgba(80, 180, 120, 0.08);
 }
 
+/* Result panel */
+
 #resultPanel {
     display: none;
     margin-top: 20px;
@@ -623,8 +620,14 @@ main {
 }
 
 @keyframes resultAppear {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 #resultPanel h3 {
@@ -717,7 +720,7 @@ footer {
     letter-spacing: 2px;
 }
 
-/* Responsive layout */
+/* Responsive */
 
 @media (max-width: 700px) {
     .navbar {

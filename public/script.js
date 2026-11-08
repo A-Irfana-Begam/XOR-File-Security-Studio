@@ -266,3 +266,58 @@ function resetResult() {
 
     downloadLink.removeAttribute("href");
 }s
+
+// ===== FLOATING OCEAN PARTICLES =====
+
+for (let i = 0; i < 24; i++) {
+    const particle = document.createElement("span");
+    particle.className = "ocean-particle";
+
+    particle.style.left = Math.random() * 100 + "vw";
+    particle.style.animationDuration = (8 + Math.random() * 12) + "s";
+    particle.style.animationDelay = (Math.random() * 12) + "s";
+    particle.style.opacity = Math.random() * 0.7 + 0.2;
+
+    const size = 2 + Math.random() * 4;
+    particle.style.width = size + "px";
+    particle.style.height = size + "px";
+
+    document.body.appendChild(particle);
+}
+
+// ===== 3D FEATURE CARD MOVEMENT =====
+
+document.querySelectorAll(".feature-card").forEach(card => {
+    card.addEventListener("mousemove", event => {
+        if (window.matchMedia("(pointer: coarse)").matches) return;
+
+        const rect = card.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        const rotateY = ((x / rect.width) - 0.5) * 9;
+        const rotateX = ((y / rect.height) - 0.5) * -9;
+
+        card.style.transform =
+            `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+    });
+
+    card.addEventListener("mouseleave", () => {
+        card.style.transform = "";
+    });
+});
+
+// ===== UPLOAD FEEDBACK =====
+
+uploadArea.addEventListener("dragenter", () => {
+    uploadArea.querySelector(".upload-symbol").style.transform =
+        "scale(1.15) translateY(-5px)";
+});
+
+uploadArea.addEventListener("dragleave", () => {
+    uploadArea.querySelector(".upload-symbol").style.transform = "";
+});
+
+uploadArea.addEventListener("drop", () => {
+    uploadArea.querySelector(".upload-symbol").style.transform = "";
+});

@@ -295,6 +295,10 @@ processForm.addEventListener("submit", async (event) => {
             block: "nearest"
         });
 
+        // Clear key after successful processing
+        keyInput.value = "";
+        checkKeyStrength("");
+
     } catch (error) {
         showMessage(error.message || "Something went wrong.");
     } finally {

@@ -1,14 +1,22 @@
 
 from flask import Flask, render_template, request, send_file, jsonify
-import io
+from io import BytesIO
+from pathlib import Path
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_folder="public",
+    static_url_path=""
+)
 
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10 MB
 
 
 def xor_encrypt_decrypt(data, key):
     key_bytes = key.encode("utf-8")
+
+    if not key_bytes:
+        raise ValueError("Encryption key is required.")
 
     return bytes(
         byte ^ key_bytes[i % len(key_bytes)]
@@ -28,62 +36,56 @@ def process_file():
         key = request.form.get("key", "")
         action = request.form.get("action", "")
 
-        # Check file
         if not uploaded_file or not uploaded_file.filename:
             return jsonify({"error": "Please select a file."}), 400
 
-        # Check key
-        if not key.strip():
-            return jsonify({"error": "Please enter your secret key."}), 400
+        if not key or not key.strip():
+            return jsonify({"error": "Please enter an encryption key."}), 400
 
         if len(key) < 8:
             return jsonify({
-                "error": "Weak key! Use at least 8 characters."
+                "error": "Your key must contain at least 8 characters."
             }), 400
 
-        # Check operation
-        if action not in ["encrypt", "decrypt"]:
-            return jsonify({"error": "Invalid operation."}), 400
+        if action not in ("encrypt", "decrypt"):
+            return jsonify({"error": "Invalid operation selected."}), 400
 
-        # Validate extension
-        filename = uploaded_file.filename
+        original_name = Path(uploaded_file.filename).name
+        extension = Path(original_name).suffix.lower()
 
-        if action == "encrypt" and not filename.lower().endswith(".txt"):
+        if action == "encrypt" and extension != ".txt":
             return jsonify({
-                "error": "Please upload a .txt file for encryption."
+                "error": "Encryption supports only .txt files."
             }), 400
 
-        if action == "decrypt" and not filename.lower().endswith(".bin"):
+        if action == "decrypt" and extension != ".bin":
             return jsonify({
-                "error": "Please upload a .bin file for decryption."
+                "error": "Decryption supports only .bin files."
             }), 400
 
-        # Read file
         data = uploaded_file.read()
 
         if not data:
-            return jsonify({"error": "File is empty."}), 400
+            return jsonify({"error": "The selected file is empty."}), 400
 
-        # XOR processing
         result = xor_encrypt_decrypt(data, key)
 
-        # Output filename
-        original_name = filename.rsplit(".", 1)[0]
+        original_stem = Path(original_name).stem
 
         if action == "encrypt":
-            output_name = original_name + "_encrypted.bin"
+            output_name = f"{original_stem}_encrypted.bin"
         else:
-            output_name = original_name + "_decrypted.txt"
+            output_name = f"{original_stem}_decrypted.txt"
 
         return send_file(
-            io.BytesIO(result),
+            BytesIO(result),
             as_attachment=True,
             download_name=output_name,
             mimetype="application/octet-stream"
         )
 
-    except Exception as error:
-        app.logger.exception("File processing failed")
+    except Exception:
+        app.logger.exception("File processing error")
         return jsonify({
             "error": "File processing failed. Please try again."
         }), 500
@@ -92,7 +94,7 @@ def process_file():
 @app.errorhandler(413)
 def file_too_large(error):
     return jsonify({
-        "error": "File is too large. Maximum size is 10 MB."
+        "error": "File size exceeds the 10 MB limit."
     }), 413
 
 

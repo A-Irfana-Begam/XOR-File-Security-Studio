@@ -98,7 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const extension = file.name.split(".").pop().toLowerCase();
-        const expectedExtension = selectedAction === "encrypt" ? "txt" : "bin";
+        const expectedExtension =
+            selectedAction === "encrypt" ? "txt" : "bin";
 
         if (extension !== expectedExtension) {
             showMessage(
@@ -146,7 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!file) return;
 
         const extension = file.name.split(".").pop().toLowerCase();
-        const expectedExtension = selectedAction === "encrypt" ? "txt" : "bin";
+        const expectedExtension =
+            selectedAction === "encrypt" ? "txt" : "bin";
 
         if (extension !== expectedExtension) {
             showMessage(
@@ -177,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
         resetResult();
     });
 
-    // Show / hide encryption key
+    // Show / hide key
     toggleKey.addEventListener("click", () => {
         const isHidden = keyInput.type === "password";
 
@@ -185,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleKey.textContent = isHidden ? "HIDE" : "SHOW";
     });
 
-    // Live key strength indicator
+    // Key strength indicator
     keyInput.addEventListener("input", () => {
         const key = keyInput.value;
 
@@ -205,9 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (/[0-9]/.test(key)) score++;
         if (/[^A-Za-z0-9]/.test(key)) score++;
 
-        const percentage = Math.round((score / 6) * 100);
-
-        strengthBar.style.width = `${percentage}%`;
+        strengthBar.style.width = `${Math.round(score / 6 * 100)}%`;
 
         if (score <= 2) {
             strengthBar.style.background = "#ff8585";
@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Encrypt / decrypt submission
+    // File processing
     fileForm.addEventListener("submit", async event => {
         event.preventDefault();
 
@@ -252,7 +252,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const extension = file.name.split(".").pop().toLowerCase();
-        const expectedExtension = selectedAction === "encrypt" ? "txt" : "bin";
+        const expectedExtension =
+            selectedAction === "encrypt" ? "txt" : "bin";
 
         if (extension !== expectedExtension) {
             showMessage(
@@ -294,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const errorData = await response.json();
                     errorMessage = errorData.error || errorMessage;
                 } catch (_) {
-                    // Keep the default error message.
+                    // Default error message
                 }
 
                 throw new Error(errorMessage);
@@ -334,6 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } finally {
             processBtn.disabled = false;
+
             buttonText.textContent =
                 selectedAction === "encrypt"
                     ? "ENCRYPT FILE"

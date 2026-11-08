@@ -1,4 +1,3 @@
-
 {
   "version": 2,
   "builds": [
@@ -8,10 +7,6 @@
     }
   ],
   "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "app.py"

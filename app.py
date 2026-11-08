@@ -6,10 +6,10 @@ from pathlib import Path
 app = Flask(
     __name__,
     static_folder="public",
-    static_url_path=""
+    static_url_path="/static"
 )
 
-app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10 MB
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 
 def xor_encrypt_decrypt(data, key):
@@ -48,10 +48,10 @@ def process_file():
             }), 400
 
         if action not in ("encrypt", "decrypt"):
-            return jsonify({"error": "Invalid operation selected."}), 400
+            return jsonify({"error": "Invalid operation."}), 400
 
-        original_name = Path(uploaded_file.filename).name
-        extension = Path(original_name).suffix.lower()
+        filename = Path(uploaded_file.filename).name
+        extension = Path(filename).suffix.lower()
 
         if action == "encrypt" and extension != ".txt":
             return jsonify({
@@ -66,16 +66,16 @@ def process_file():
         data = uploaded_file.read()
 
         if not data:
-            return jsonify({"error": "The selected file is empty."}), 400
+            return jsonify({"error": "File is empty."}), 400
 
         result = xor_encrypt_decrypt(data, key)
+        name = Path(filename).stem
 
-        original_stem = Path(original_name).stem
-
-        if action == "encrypt":
-            output_name = f"{original_stem}_encrypted.bin"
-        else:
-            output_name = f"{original_stem}_decrypted.txt"
+        output_name = (
+            f"{name}_encrypted.bin"
+            if action == "encrypt"
+            else f"{name}_decrypted.txt"
+        )
 
         return send_file(
             BytesIO(result),
@@ -85,7 +85,7 @@ def process_file():
         )
 
     except Exception:
-        app.logger.exception("File processing error")
+        app.logger.exception("File processing failed")
         return jsonify({
             "error": "File processing failed. Please try again."
         }), 500

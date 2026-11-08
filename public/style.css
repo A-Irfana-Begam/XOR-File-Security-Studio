@@ -1063,3 +1063,91 @@ footer {
         transition-duration: .01ms !important;
     }
 }
+
+/* ===== FULL SCREEN CHROME BACKGROUND ===== */
+
+.chrome-background {
+    background:
+        radial-gradient(ellipse at 5% 50%, rgba(190,205,220,.20), transparent 42%),
+        radial-gradient(ellipse at 95% 25%, rgba(130,150,170,.19), transparent 40%),
+        radial-gradient(ellipse at 80% 90%, rgba(120,145,170,.17), transparent 38%),
+        radial-gradient(ellipse at 15% 90%, rgba(180,190,205,.13), transparent 38%);
+}
+
+/* Moving metallic light across entire screen */
+.chrome-background::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        115deg,
+        transparent 25%,
+        rgba(220,230,240,.035) 35%,
+        rgba(240,245,250,.13) 38%,
+        rgba(180,195,210,.045) 42%,
+        transparent 52%
+    );
+    animation: chromeSweep 12s ease-in-out infinite alternate;
+}
+
+@keyframes chromeSweep {
+    0% {
+        transform: translate(-15%, -8%) rotate(0deg);
+    }
+    100% {
+        transform: translate(15%, 8%) rotate(4deg);
+    }
+}
+
+/* Floating metallic light particles */
+.chrome-background::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 2px),
+        radial-gradient(circle, rgba(190,210,230,.7) 1.5px, transparent 3px),
+        radial-gradient(circle, rgba(230,235,240,.5) 1px, transparent 2px);
+    background-size: 130px 150px, 190px 210px, 250px 180px;
+    background-position: 0 0, 65px 80px, 120px 30px;
+    opacity: .35;
+    animation: chromeParticles 18s linear infinite;
+}
+
+@keyframes chromeParticles {
+    from {
+        background-position: 0 0, 65px 80px, 120px 30px;
+    }
+    to {
+        background-position: 130px -300px, -100px -250px, 350px -200px;
+    }
+}
+
+/* More visible side lighting */
+.ambient-one {
+    width: 650px;
+    height: 650px;
+    left: -280px;
+    top: 15%;
+    opacity: .27;
+}
+
+.ambient-two {
+    width: 650px;
+    height: 650px;
+    right: -280px;
+    bottom: 0;
+    opacity: .25;
+}
+
+/* Visible rotating chrome lock */
+.lock-scene {
+    opacity: .25;
+}
+
+/* Smooth background grid */
+.chrome-grid {
+    opacity: .17;
+}
